@@ -14,7 +14,7 @@ import {
 interface Props {
   title: string;
   ammount: string;
-  lastTransaction: string;
+  lastTransaction?: string;
   type: "up" | "down" | "total";
 }
 
