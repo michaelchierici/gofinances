@@ -53,8 +53,6 @@ const Register = () => {
     resolver: yupResolver(schema),
   });
 
-  const dataKey = "@gofinances:transactions";
-
   async function handleRegister(form: FormData) {
     if (!transactionType) return Alert.alert("Selecione o tipo da transação");
 
@@ -71,6 +69,7 @@ const Register = () => {
     };
 
     try {
+      const dataKey = "@gofinances:transactions";
       const data = await AsyncStorage.getItem(dataKey);
       const currentData = data ? JSON.parse(data) : [];
 

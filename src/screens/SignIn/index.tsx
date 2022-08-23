@@ -16,9 +16,26 @@ import LogoSvg from "../../assets/logo.svg";
 import { RFValue } from "react-native-responsive-fontsize";
 import SignInSocialButton from "../../Components/SignInSocialButton";
 import { useAuth } from "../../hooks/auth";
+import { Alert } from "react-native";
 
 const SignIn = () => {
-  const { user } = useAuth();
+  const { signIntWithGoogle, signWithApple } = useAuth();
+
+  async function handleSignIntWithGoogle() {
+    try {
+      await signIntWithGoogle();
+    } catch (error) {
+      Alert.alert(error as any);
+    }
+  }
+
+  async function handleSignIntWithApple() {
+    try {
+      await signWithApple();
+    } catch (error) {
+      Alert.alert(error as any);
+    }
+  }
 
   return (
     <Container>
@@ -35,8 +52,16 @@ const SignIn = () => {
       </Header>
       <Footer>
         <FooterWrapper>
-          <SignInSocialButton title="Entrar com Goggle" svg={GoogleSvg} />
-          <SignInSocialButton title="Entrar com Apple" svg={AppleSvg} />
+          <SignInSocialButton
+            title="Entrar com Goggle"
+            svg={GoogleSvg}
+            onPress={handleSignIntWithGoogle}
+          />
+          <SignInSocialButton
+            title="Entrar com Apple"
+            svg={AppleSvg}
+            onPress={handleSignIntWithApple}
+          />
         </FooterWrapper>
       </Footer>
     </Container>
