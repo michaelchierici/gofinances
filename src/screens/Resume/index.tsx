@@ -4,6 +4,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 import { useTheme } from "styled-components";
 import { VictoryPie } from "victory-native";
 import HistoryCard from "../../Components/HistoryCard";
+import { useAuth } from "../../hooks/auth";
 import { categories } from "../../utils/categories";
 
 import { Container, Header, Title, Content, ChartContainer } from "./styles";
@@ -28,11 +29,13 @@ const Resume = () => {
   const [totalByCategories, setTotalByCategories] = useState<CategoryData[]>(
     []
   );
+  const { signOut, user } = useAuth();
 
   const theme = useTheme();
 
   async function loadData() {
-    const dataKey = "@gofinances:transactions";
+    const dataKey = `@gofinances:transactions_user:${user.id}`;
+
     const response = await AsyncStorage.getItem(dataKey);
     const responseFormatted = response ? JSON.parse(response) : [];
 

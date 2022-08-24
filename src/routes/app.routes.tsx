@@ -9,7 +9,7 @@ import { Platform } from "react-native";
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
-const Routes = () => {
+const AppRoutes = () => {
   const theme = useTheme();
   return (
     <Navigator
@@ -59,4 +59,4 @@ const Routes = () => {
   );
 };
 
-export default Routes;
+export default AppRoutes;

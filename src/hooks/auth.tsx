@@ -1,4 +1,10 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 import * as AuthSession from "expo-auth-session";
 import * as AppleAuthentication from "expo-apple-authentication";
@@ -22,6 +28,8 @@ interface AuthContextData {
   user: User;
   signIntWithGoogle(): Promise<void>;
   signWithApple(): Promise<void>;
+  signOut(): Promise<void>;
+  loading: boolean;
 }
 
 interface AuthorizationResponse {
@@ -35,9 +43,12 @@ const AuthContext = createContext({} as AuthContextData);
 
 export function AuthProvider({ children }: AuthProps) {
   const [user, setUser] = useState<User>({} as User);
+  const [loading, setLoading] = useState(false);
+
+  const userStorageKey = "@gofinances/user";
+
   async function signIntWithGoogle() {
     try {
-      const userStorageKey = "@gofinances/user";
       const RESPONSE_TYPE = "token";
       const SCOPE = encodeURI("profile email");
 
@@ -70,8 +81,6 @@ export function AuthProvider({ children }: AuthProps) {
 
   async function signWithApple() {
     try {
-      const userStorageKey = "@gofinances/user";
-
       const credentials = await AppleAuthentication.signInAsync({
         requestedScopes: [
           AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
@@ -93,8 +102,29 @@ export function AuthProvider({ children }: AuthProps) {
     }
   }
 
+  async function signOut() {
+    setUser({} as User);
+    await AsyncStorage.removeItem(userStorageKey);
+  }
+
+  useEffect(() => {
+    async function loadUserStorageData() {
+      const userStorage = await AsyncStorage.getItem(userStorageKey);
+
+      if (userStorage) {
+        const userLogged = JSON.parse(userStorage) as User;
+        setUser(userLogged);
+      }
+      setLoading(false);
+    }
+
+    loadUserStorageData();
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, signIntWithGoogle, signWithApple }}>
+    <AuthContext.Provider
+      value={{ user, signIntWithGoogle, signWithApple, signOut, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );

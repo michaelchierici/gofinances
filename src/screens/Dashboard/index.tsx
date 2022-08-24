@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
+import { useAuth } from "../../hooks/auth";
 import HighlightCard from "../../Components/HighlightCard";
 import TransactionCard, {
   TransactionCardProps,
@@ -43,6 +44,8 @@ const Dashboard = () => {
     {} as HighlightData
   );
 
+  const { signOut, user } = useAuth();
+
   function getLastTransactionDate(
     collection: DataListProps[],
     type: "positive" | "negative"
@@ -63,7 +66,8 @@ const Dashboard = () => {
     }).format(new Date(lastTransactions));
   }
   async function loadTransactions() {
-    const dataKey = "@gofinances:transactions";
+    const dataKey = `@gofinances:transactions_user:${user.id}`;
+
     const response = await AsyncStorage.getItem(dataKey);
     const transactions = response ? JSON.parse(response) : [];
 
@@ -153,16 +157,16 @@ const Dashboard = () => {
           <UserInfo>
             <Photo
               source={{
-                uri: "https://avatars.githubusercontent.com/u/78627567?v=4",
+                uri: user.photo,
               }}
             />
             <User>
               <UserGreeting>Olá, </UserGreeting>
-              <UserName>Michael</UserName>
+              <UserName>{user.name}</UserName>
             </User>
           </UserInfo>
 
-          <LogoutButton onPress={() => {}}>
+          <LogoutButton onPress={signOut}>
             <Icon name="power" />
           </LogoutButton>
         </UserWrapper>

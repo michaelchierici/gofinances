@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 
 import {
   Container,
@@ -16,24 +16,32 @@ import LogoSvg from "../../assets/logo.svg";
 import { RFValue } from "react-native-responsive-fontsize";
 import SignInSocialButton from "../../Components/SignInSocialButton";
 import { useAuth } from "../../hooks/auth";
-import { Alert } from "react-native";
+import { ActivityIndicator, Alert, Platform } from "react-native";
+import { useTheme } from "styled-components";
 
 const SignIn = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const { signIntWithGoogle, signWithApple } = useAuth();
+  const theme = useTheme();
 
   async function handleSignIntWithGoogle() {
     try {
-      await signIntWithGoogle();
+      setIsLoading(true);
+      return await signIntWithGoogle();
     } catch (error) {
       Alert.alert(error as any);
+      setIsLoading(false);
     }
   }
 
   async function handleSignIntWithApple() {
     try {
-      await signWithApple();
+      setIsLoading(true);
+      return await signWithApple();
     } catch (error) {
       Alert.alert(error as any);
+      setIsLoading(false);
     }
   }
 
@@ -57,12 +65,21 @@ const SignIn = () => {
             svg={GoogleSvg}
             onPress={handleSignIntWithGoogle}
           />
-          <SignInSocialButton
-            title="Entrar com Apple"
-            svg={AppleSvg}
-            onPress={handleSignIntWithApple}
-          />
+          {Platform.OS === "ios" && (
+            <SignInSocialButton
+              title="Entrar com Apple"
+              svg={AppleSvg}
+              onPress={handleSignIntWithApple}
+            />
+          )}
         </FooterWrapper>
+
+        {isLoading && (
+          <ActivityIndicator
+            color={theme.colors.shape}
+            style={{ marginTop: 10 }}
+          />
+        )}
       </Footer>
     </Container>
   );
