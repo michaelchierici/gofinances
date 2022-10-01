@@ -8,7 +8,6 @@ import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 
 import expo.modules.ReactActivityDelegateWrapper;
-import RNGestureHandlerEnabledRootView;
 
 public class MainActivity extends ReactActivity {
   @Override
