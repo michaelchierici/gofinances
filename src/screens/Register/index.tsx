@@ -94,14 +94,6 @@ const Register = () => {
     }
   }
 
-  // useEffect(() => {
-  //   async function loadData() {
-  //     const data = await AsyncStorage.getItem(dataKey);
-  //     console.log(JSON.parse(data!));
-  //   }
-  //   loadData();
-  // }, []);
-
   function handleTransactionTypeSelect(type: "positive" | "negative") {
     setTransactionType(type);
   }
@@ -153,13 +145,14 @@ const Register = () => {
             </TransactionsTypes>
 
             <CategorySelectButton
+              testID="button-category"
               title={category.name}
               onPress={handleOpenSelectCategoryModal}
             />
           </Fields>
           <Button title="Enviar" onPress={handleSubmit(handleRegister)} />
         </Form>
-        <Modal visible={modalOpen}>
+        <Modal testID="modal-category" visible={modalOpen}>
           <CategorySelect
             category={category}
             setCategory={setCategory}
